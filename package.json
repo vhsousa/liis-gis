@@ -1,0 +1,12 @@
+{
+  "name": "liis-gis",
+  "version": "0.0.1",
+  "dependencies": {
+    "cors": "^2.6.0",
+    "deferred": "^0.7.2",
+    "express": "^4.12.4",
+    "jade": "^1.9.2",
+    "path": "^0.11.14",
+    "restler": "^3.2.2"
+  }
+}

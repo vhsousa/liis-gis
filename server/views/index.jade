@@ -1,0 +1,11 @@
+doctype
+html
+    head
+        title LIIS - GIS
+        link(rel="stylesheet", href="/vendor/bootstrap/dist/css/bootstrap.min.css")
+        base(href="/")
+        include scripts
+body(ng-app='app')
+    block main-content
+        section.content
+            div(ng-view)

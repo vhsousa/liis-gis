@@ -1,0 +1,50 @@
+link(rel="stylesheet", href="/vendor/leaflet/dist/leaflet.css")
+link(rel="stylesheet", href="/vendor/Leaflet.awesome-markers/dist/leaflet.awesome-markers.css")
+link(rel="stylesheet", href="/vendor/font-awesome/css/font-awesome.min.css")
+meta(name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no")
+div.jumbotron.text-center
+   div.container(ng-controller="MapController")
+      div.col-md-8.col-md-offset-0
+         div.panel.panel-default
+            div.panel-heading
+               h4.panel-title Geo Mapping
+            div.panel-body
+               leaflet(id="map", center="map.center", markers="map.markers", layers="map.layers", width="700", height="480")
+
+      div.col-md-4.col-md-offset-0
+         div.panel.panel-default
+            div.panel-heading
+               h4.panel-title Network Info
+            div.panel-body.text-left
+               small
+                  b Host:
+                  a(href="http://hydra.dei.uc.pt/supervision/api/v2/")  http://hydra.dei.uc.pt/supervision/api/v2/
+                  br
+                  b Administrator:
+                  |  {{network_info.general.admin}}
+                  br
+                  b Network Name:
+                  |  liis_wsn01
+                  br
+                  b Type:
+                  |  {{network_info.general.type}}
+                  br
+                  b Number of Nodes:
+                  |  {{network_info['number-of-nodes']}}
+                  br
+                  b Sampling Rate:
+                  |  {{network_info['sampling-time']}} s
+                  br
+                  b Camera:
+                  a(href="network_info.general.camera")  {{network_info.general.camera}}
+                  br
+                  div.panel.panel-default
+         div.panel.panel-default
+            div.panel-heading
+               h4.panel-title Node Info
+            div.panel-body.text-left
+               small(ng-repeat="(sensor, unit) in sensors")
+                  b {{sensor}}:
+                  |  {{unit}}
+                  br
+

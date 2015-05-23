@@ -1,0 +1,32 @@
+include HeaderView
+link(rel="stylesheet", href="/vendor/chartist/dist/chartist.min.css")
+div.jumbotron.text-center
+   div.container
+      div.col-md-10.col-md-offset-0
+         div.panel.panel-default
+            div.panel-heading
+               span.glyphicon.glyphicon-forward.pull-left(ng-click="plotLeft()" ng-hide="!nextLeft" style="-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);")
+               h4.panel-title
+               | Graph Analysis
+               span.glyphicon.glyphicon-forward.pull-right(ng-click="plotRight()" ng-hide="!nextRight")
+            div.panel-body
+               p Graph
+
+      div.col-md-2.col-md-offset-0(ng-hide="options")
+         div.panel.panel-default
+            div.panel-heading
+               h4.panel-title Options
+            div.panel-body.text-left
+               small Number of Samples [X]
+
+      div.col-md-12.col-md-offset-0
+         div.panel.panel-default
+            div.panel-heading
+               h4.panel-title Timeline
+            div.panel-body
+               div.ct-chart
+            div.panel-footer
+               div.label
+                  svg(width="10" height="10")
+                     rect(width="10" height="10" style="fill:#d70206;")
+                  span.text-muted &nbsp;{{parameter}}
