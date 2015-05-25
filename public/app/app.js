@@ -1,4 +1,4 @@
-angular.module('app', ['ngResource', 'ngRoute', 'leaflet-directive']);
+angular.module('app', ['ngResource', 'ngRoute', 'leaflet-directive','angular-loading-bar', 'blockUI']);
 
 angular.module('app').config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
 

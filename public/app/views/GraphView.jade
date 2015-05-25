@@ -10,21 +10,27 @@ div.jumbotron.text-center
                | Graph Analysis
                span.glyphicon.glyphicon-forward.pull-right(ng-click="plotRight()" ng-hide="!nextRight")
             div.panel-body
-               p Graph
+               p.text-center {{splitTitle}}
+               div.ct-chart(id="ct-chart-split")
+            div.panel-footer
+               div.label
+                  svg(width="10" height="10")
+                     rect(width="10" height="10" style="fill:#d70206;")
+                  span.text-muted &nbsp;{{parameter}}
 
       div.col-md-2.col-md-offset-0(ng-hide="options")
          div.panel.panel-default
             div.panel-heading
-               h4.panel-title Options
+               h4.panel-title Samples
             div.panel-body.text-left
-               small Number of Samples [X]
+               input.form-control.input-sm(type="text" placeholder="e.g. 128" value="20" id="threshold")
 
       div.col-md-12.col-md-offset-0
          div.panel.panel-default
             div.panel-heading
                h4.panel-title Timeline
             div.panel-body
-               div.ct-chart
+               div.ct-chart(id="ct-chart-timeline")
             div.panel-footer
                div.label
                   svg(width="10" height="10")

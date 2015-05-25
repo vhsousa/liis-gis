@@ -18,7 +18,21 @@ angular.module('app').factory('DataFactory', ['$http', '$q', function ($http, $q
 					}
 				});
 			return defer.promise;
+		},
+
+		getRecent: function(network,node){
+			var defer = $q.defer();
+			$http.get("/api/recent/"+network+"/"+node)
+				.success(function (response) {
+					if(response.success){
+						defer.resolve(response.data);
+					}else{
+						defer.reject(response.message);
+					}
+				});
+			return defer.promise;
 		}
 	}
+
 
 }]);
