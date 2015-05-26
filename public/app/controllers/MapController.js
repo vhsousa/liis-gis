@@ -1,4 +1,4 @@
-angular.module('app').controller('MapController', ['$scope', '$interval', 'leafletData','MapsFactory', function($scope, $interval, leafletData, MapsFactory) {
+angular.module('app').controller('MapController', ['$scope', '$interval', 'leafletData','MapsFactory', 'blockUI', function($scope, $interval, leafletData, MapsFactory, blockUI) {
 
 	$scope.map = {
 		zoomAnimation: false,
@@ -54,7 +54,75 @@ angular.module('app').controller('MapController', ['$scope', '$interval', 'leafl
 	var popup="";
 	var units = {};
 
+	var imageUrl = 'http://i.imgur.com/C7SvSGs.png';
+	var imageBounds = [[40.18707001445873, -8.417635560035706], [40.18553730681936, -8.415586352348328]];
+	$scope.geop_options = true;
+	$scope.layers = [];
+	$scope.l1_v = 20;
+	$scope.l2_v = 50;
+	$scope.l3_v = 80;
+
+	$scope.opacity_control = function (layer) {
+		leafletData.getMap('map').then(function(map) {
+			var input = $("#op_"+layer);
+			layer -=1;
+			map.removeLayer($scope.layers[layer]);
+			$scope.layers[layer] = L.imageOverlay(imageUrl, imageBounds, {opacity: parseInt(input.val())/100});
+			map.addLayer($scope.layers[layer]);
+		});
+	};
+
+	$scope.layer_control = function (e) {
+		blockUI.start();
+
+		if(e.target.checked){
+			leafletData.getMap('map').then(function(map) {
+				map.addLayer($scope.layers[e.target.value-1]);
+			});
+		}else{
+			leafletData.getMap('map').then(function(map) {
+				map.removeLayer($scope.layers[e.target.value-1]);
+			});
+		}
+
+		blockUI.stop();
+	};
+
+	$scope.geop_process = function () {
+		blockUI.start();
+
+		var checked = $('#geop_check').is(':checked');
+
+		if(checked){
+			$scope.geop_options = false;
+			leafletData.getMap('map').then(function(map) {
+				if($scope.layers.length>0){
+					$scope.layers.forEach(function (entry) {
+						map.addLayer(entry);
+					});
+				}else{
+					console.log('Creating layers');
+					$scope.layers.push(L.imageOverlay(imageUrl, imageBounds, {opacity:parseInt($("#op_1").val())/100}));
+
+					$scope.layers.forEach(function (entry) {
+						map.addLayer(entry);
+					});
+				}
+			});
+		}else{
+			leafletData.getMap('map').then(function(map) {
+				$scope.layers.forEach(function (entry) {
+					map.removeLayer(entry);
+				});
+			});
+			$scope.geop_options = true;
+		}
+
+		blockUI.stop();
+	};
+
 	leafletData.getMap('map').then(function(map) {
+
 		MapsFactory.getInfo($scope.network_name).then(function (response) {
 			response.general = angular.fromJson(response.general);
 			$scope.network_info = response;
