@@ -20,6 +20,19 @@ angular.module('app').factory('DataFactory', ['$http', '$q', function ($http, $q
 			return defer.promise;
 		},
 
+		getHeatmap: function(network, hour, day, month, year){
+			var defer = $q.defer();
+			$http.get("/api/heatmap/"+network+"/"+hour+"/"+day+"/"+month+"/"+year)
+				.success(function (response) {
+					if(response.success){
+						defer.resolve(response.heatmap);
+					}else{
+						defer.reject(response.message);
+					}
+				});
+			return defer.promise;
+		},
+
 		getRecent: function(network,node){
 			var defer = $q.defer();
 			$http.get("/api/recent/"+network+"/"+node)

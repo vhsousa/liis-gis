@@ -72,4 +72,21 @@ angular.module('app').controller('MainController', ['$scope', function($scope) {
 			e.preventDefault();
 		}
 	});
+
+
+	var c = document.getElementById("labelCanvas");
+	var ctx = c.getContext('2d');
+	var grd = ctx.createLinearGradient(40, 0, 40 ,480);
+	grd.addColorStop(0, "#660000");
+	grd.addColorStop(0.2, "#AA0313");
+	grd.addColorStop(0.4, "#E62B28");
+	grd.addColorStop(0.6, "#F57E62");
+	grd.addColorStop(0.8, "#F8C2AE");
+	grd.addColorStop(1, "#FDF1EC");
+
+	ctx.fillStyle = grd;
+	ctx.fillRect(40, 0, 40, 480);
+
+
+
 }]);

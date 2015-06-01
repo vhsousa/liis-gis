@@ -9,8 +9,10 @@ div.jumbotron.text-center
             div.panel-heading
                h4.panel-title Geo Mapping
             div.panel-body
-               leaflet(id="map", center="map.center", markers="map.markers", layers="map.layers", width="700", height="480")
-
+                  div.col-md-10
+                     leaflet(id="map", center="map.center", markers="map.markers", layers="map.layers", width="680", height="480")
+                  div.pull-right(id="canvas" ng-hide="heatmapLabelHide")
+                     canvas(id="labelCanvas" width="80" height="480")
       div.col-md-4.col-md-offset-0
          div.panel.panel-default
             div.panel-heading
@@ -22,50 +24,56 @@ div.jumbotron.text-center
                   div(id="geop_div" ng-hide="geop_options")
                      br
                      div.col-md-12.text-center
-                        span.glyphicon.glyphicon-forward.pull-left(style="-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);")
-                        b Day XPTO
-                        span.glyphicon.glyphicon-forward.pull-right()
+                        span.glyphicon.glyphicon-backward.pull-left(ng-click="previousDay()" ng-hide="previousDayHide")
+                        b {{heatmap.date.getFullYear()}}-{{heatmap.date.getMonth()}}-{{heatmap.date.getDate()}}
+                        span.glyphicon.glyphicon-forward.pull-right(ng-click="nextDay()" ng-hide="nextDayHide")
                      br
                      br
                      div.col-md-12
                         div.col-sm-6.col-sm-offset-0
-                           b Layer 1: &nbsp;&nbsp;
-                              input(checked value="1" ng-click="layer_control($event)" type="checkbox")
+                           b &nbsp;{{heatmap.layers[0].hour}} h &nbsp;&nbsp;
+                              input(id="active_0" checked value="0" ng-click="layer_control($event)" type="checkbox")
+                           span.glyphicon.glyphicon-step-backward.pull-left(ng-click="previousHour(0)" ng-hide="heatmap.layers[0].previousHourHide")
+                           span.glyphicon.glyphicon-step-forward.pull-left(ng-click="nextHour(0)" ng-hide="heatmap.layers[0].nextHourHide")
                         div.col-sm-6.col-sm-offset-0
                            b Opacity:
                            div.input-group
                               span.input-group-btn
                                  button.btn.btn-xs.btn-danger.btn-number(type='button', data-type='minus', data-field='quant[1]')
                                     span.glyphicon.glyphicon-minus
-                              input.form-control.input-number(ng-model="l1_v" ng-change="opacity_control(1)" id="op_1" style="height: 22px;padding: 2px 5px;font-size: 12px;line-height: 1.5;border-radius: 3px;" type='text', name='quant[1]', value='20', min='1', max='100')
+                              input.form-control.input-number(ng-model="l1_v" ng-change="opacity_control(0)" id="op_0" style="height: 22px;padding: 2px 5px;font-size: 12px;line-height: 1.5;border-radius: 3px;" type='text', name='quant[1]', value='80', min='1', max='100')
                               span.input-group-btn
                                  button.btn.btn-xs.btn-success.btn-number(type='button', data-type='plus', data-field='quant[1]')
                                     span.glyphicon.glyphicon-plus
                      div.col-md-12
                         div.col-sm-6.col-sm-offset-0
-                           b Layer 2: &nbsp;&nbsp;
-                              input(checked value="2" ng-click="layer_control($event)" type="checkbox")
+                           b &nbsp;{{heatmap.layers[1].hour}} h &nbsp;&nbsp;
+                              input(id="active_1" checked value="1" ng-click="layer_control($event)" type="checkbox")
+                           span.glyphicon.glyphicon-step-backward.pull-left(ng-click="previousHour(1)" ng-hide="heatmap.layers[1].previousHourHide")
+                           span.glyphicon.glyphicon-step-forward.pull-left(ng-click="nextHour(1)" ng-hide="heatmap.layers[1].nextHourHide")
                         div.col-sm-6.col-sm-offset-0
                            b Opacity:
                            div.input-group
                               span.input-group-btn
                                  button.btn.btn-xs.btn-danger.btn-number(type='button', data-type='minus', data-field='quant[2]')
                                     span.glyphicon.glyphicon-minus
-                              input.form-control.input-number(ng-model="l2_v" ng-change="opacity_control(2)" id="op_2" style="height: 22px;padding: 2px 5px;font-size: 12px;line-height: 1.5;border-radius: 3px;" type='text', name='quant[2]', value='50', min='1', max='100')
+                              input.form-control.input-number(ng-model="l2_v" ng-change="opacity_control(1)" id="op_1" style="height: 22px;padding: 2px 5px;font-size: 12px;line-height: 1.5;border-radius: 3px;" type='text', name='quant[2]', value='50', min='1', max='100')
                               span.input-group-btn
                                  button.btn.btn-xs.btn-success.btn-number(type='button', data-type='plus', data-field='quant[2]')
                                     span.glyphicon.glyphicon-plus
                      div.col-md-12
                         div.col-sm-6.col-sm-offset-0
-                           b Layer 3: &nbsp;&nbsp;
-                              input(checked value="3" ng-click="layer_control($event)" type="checkbox")
+                           b &nbsp;{{heatmap.layers[2].hour}} h &nbsp;&nbsp;
+                              input(id="active_2" checked value="2" ng-click="layer_control($event)" type="checkbox")
+                           span.glyphicon.glyphicon-step-backward.pull-left(ng-click="previousHour(2)" ng-hide="heatmap.layers[2].previousHourHide")
+                           span.glyphicon.glyphicon-step-forward.pull-left(ng-click="nextHour(2)" ng-hide="heatmap.layers[2].nextHourHide")
                         div.col-sm-6.col-sm-offset-0
                            b Opacity:
                            div.input-group
                               span.input-group-btn
                                  button.btn.btn-xs.btn-danger.btn-number(type='button', data-type='minus', data-field='quant[3]')
                                     span.glyphicon.glyphicon-minus
-                              input.form-control.input-number(ng-model="l3_v" ng-change="opacity_control(3)" id="op_3" style="height: 22px;padding: 2px 5px;font-size: 12px;line-height: 1.5;border-radius: 3px;" type='text', name='quant[3]', value='80', min='1', max='100')
+                              input.form-control.input-number(ng-model="l3_v" ng-change="opacity_control(2)" id="op_2" style="height: 22px;padding: 2px 5px;font-size: 12px;line-height: 1.5;border-radius: 3px;" type='text', name='quant[3]', value='20', min='1', max='100')
                               span.input-group-btn
                                  button.btn.btn-xs.btn-success.btn-number(type='button', data-type='plus', data-field='quant[3]')
                                     span.glyphicon.glyphicon-plus
