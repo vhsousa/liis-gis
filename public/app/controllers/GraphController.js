@@ -66,18 +66,46 @@ angular.module('app').controller('GraphController', ['$scope', '$interval', 'Dat
 		var numOfDays = 0;
 		var sample_series = [];
 		var sample_labels = [];
+
 		response.forEach(function (entry) {
 
+
 			var bits = entry.data[node]['timestamp'].split(/\D/);
+
 			var timestamp = new Date(bits[0], --bits[1], bits[2], bits[3], bits[4], bits[5]);
 
-			if(lastTimestamp==null || dateDiffInDays(lastTimestamp, timestamp)>=1){
 
+			if(lastTimestamp==null || dateDiffInDays(lastTimestamp, timestamp)>=1){
 				if(lastTimestamp!=null){
-					++numOfDays;
-					series.unshift({name:lastTimestamp, data:sample_series, labels:sample_labels});
-				  sample_series = [];
-				  sample_labels = [];
+					//FIXME: Copy the last elements if there are more then 20 values. Otherwise, remove the number of elements that are left
+					if(sample_labels.length>=20 && sample_labels.length<24){
+						var samples = sample_series.slice(sample_series.length-(24-sample_series.length));
+						//console.log('Copying samples', lastTimestamp, sample_labels.length, samples.length);
+						history_series.push(samples);
+						sample_series.push(samples);
+						var label = sample_labels[(sample_labels.length-(24-sample_labels.length))-1];
+						while(sample_labels.length<24){
+							history_labels.push(new Date(label.getTime()+1000));
+							sample_labels.push(new Date(label.getTime()+1000));
+							label = sample_labels[(sample_labels.length-(24-sample_labels.length))-1];
+						}
+					}else if(sample_series.length<20){
+						//console.log('Over sample', lastTimestamp, sample_series.length, history_series.length);
+						history_series = history_series.slice(0, history_series.length-sample_series.length);
+						//console.log('After resample', history_series.length);
+						history_labels = history_labels.slice(0, history_labels.length-sample_labels.length);
+						sample_series = [];
+						sample_labels = [];
+					}
+
+					if(sample_labels.length>=24){
+						++numOfDays;
+						//console.log(lastTimestamp, sample_labels.length);
+						series.unshift({name:lastTimestamp, data:sample_series, labels:sample_labels});
+					}
+
+					sample_series = [];
+					sample_labels = [];
 				}
 				lastTimestamp = timestamp;
 
@@ -85,7 +113,6 @@ angular.module('app').controller('GraphController', ['$scope', '$interval', 'Dat
 
 			var value = parseFloat(entry.data[node][parameter]);
 			if(isNaN(value)){
-
 				if(history_series.length > 0){
 					history_series.push(history_series[history_series.length-1]);
 					sample_series.push(history_series[history_series.length-1]);
@@ -93,16 +120,16 @@ angular.module('app').controller('GraphController', ['$scope', '$interval', 'Dat
 					history_series.push(0);
 					sample_series.push(0);
 				}
-
 			}else {
 				history_series.push(value);
 				sample_series.push(value);
 			}
-
 			history_labels.push(timestamp);
 			sample_labels.push(timestamp);
 
 		});
+
+		//console.log(history_series.length, history_labels.length, numOfDays);
 
 		series.unshift({name:"Now", data:history_series.slice((numOfDays*24)+1), labels:history_labels.slice((numOfDays*24)+1)});
 		history_labels[history_labels.length-1] = "<b>Now</b>";
@@ -126,6 +153,7 @@ angular.module('app').controller('GraphController', ['$scope', '$interval', 'Dat
 
 						if (value!= null && index % 24 == 0) {
 							var date = value.toString().split(" ");
+
 							return "<b>"+date[1]+" "+date[2]+" "+date[3]+"</b>";
 						}else{
 							return ""
@@ -176,7 +204,7 @@ angular.module('app').controller('GraphController', ['$scope', '$interval', 'Dat
 			$scope.interval = $interval(function () {
 				DataFactory.getRecent(network,node).then(function(response){
 					var threshold = $("#threshold").val();
-					console.log(response);
+					//console.log(response);
 					$scope.realTimeData.push(response[parameter]);
 					$scope.realTimeLabels.push(response['timestamp']);
 

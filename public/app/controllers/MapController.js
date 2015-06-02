@@ -146,7 +146,7 @@ angular.module('app').controller('MapController', ['$scope', '$interval', 'leafl
 	};
 
 	leafletData.getMap('map').then(function(map) {
-
+		L.control.scale().addTo(map);
 		MapsFactory.getInfo($scope.network_name).then(function (response) {
 			response.general = angular.fromJson(response.general);
 			$scope.network_info = response;
